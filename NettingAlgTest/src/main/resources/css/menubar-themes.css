@@ -1,0 +1,60 @@
+.menu-bar {
+    /*-fx-background-color: -fx-color-white;*/
+    -fx-my-menu-color: transparent;
+    -fx-my-menu-color-highlighted: transparent;
+
+    -fx-my-menu-font-color: -fx-color-black;
+    -fx-my-menu-font-color-highlighted: -fx-color-grey;
+}
+
+/*** Top-level menu itself (not selected / hovered) ***/
+.menu-bar > .container > .menu-button {
+    -fx-background-color: -fx-my-menu-color;
+    -fx-cursor: hand;
+}
+
+/*** Top-level menu's label (not selected / hovered) ***/
+.menu-bar > .container > .menu-button > .label {
+    -fx-text-fill: -fx-my-menu-font-color;
+}
+
+/*** Top-level menu's label (disabled) ***/
+.menu-bar > .container > .menu-button > .label:disabled {
+    -fx-opacity: 1.0;
+}
+
+/*** Top-level menu itself (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background-color: -fx-my-menu-color-highlighted;
+}
+
+/*** Top-level menu's label (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover > .label,
+.menu-bar > .container > .menu-button:focused > .label,
+.menu-bar > .container > .menu-button:showing > .label {
+    -fx-text-fill: -fx-my-menu-font-color-highlighted;
+}
+
+.menu-item {
+    -fx-cursor: hand;
+}
+
+.menu-item .label {
+    -fx-text-fill: -fx-color-black;
+}
+
+.menu-item:focused {
+    -fx-background-color: -fx-color-grey-light;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: -fx-color-grey;
+}
+
+.context-menu {
+    -fx-background-color: -fx-color-grey-light;
+    -fx-background-insets: 0;
+    -fx-padding: 0
+}

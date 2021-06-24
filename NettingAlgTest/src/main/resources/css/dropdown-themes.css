@@ -1,0 +1,12 @@
+.drop-down {
+    -fx-background-color: -fx-color-white;
+    -fx-border-color: -fx-color-grey-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: solid;
+    -fx-pref-height: 32px;
+}
+
+.drop-down:hover {
+    -fx-cursor: hand;
+}

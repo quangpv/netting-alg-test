@@ -1,0 +1,116 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "org.openjfx.javafxplugin" version "0.0.10"
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+}
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'kotlin'
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3'
+
+    implementation "org.junit.jupiter:junit-jupiter:5.6.0"
+    implementation "org.apache.httpcomponents:httpclient:4.5.13"
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.0.1'
+
+    implementation project(":netting")
+    implementation project(":common")
+
+    implementation name: 'JavaFXSmartGraph-0.9.2'
+
+}
+test {
+    useJUnitPlatform()
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    options.incremental = true
+}
+
+javafx {
+    modules = ["javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.base"]
+    version = '11.0.2'
+}
+
+mainClassName = "com.onehypernet.da.Launcher"
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+def appName = 'OneHypernet'
+def outFolder = 'out/artifacts/desktop_app_jar/'
+def fileToExport = "desktop_app.jar"
+def icon = 'src/main/resources/ic_launcher'
+
+task packfile(type: Exec) {
+    def installType = project.findProperty('installerType')
+
+    def args = [
+            "jpackage",
+            '--type', "${installType}",
+            '--dest', "${outFolder}",
+            "--name", "${appName}",
+            '--input', "${outFolder}",
+            '--main-jar', "${fileToExport}",
+            '--main-class', "$mainClassName",
+            '--description', "N/A",
+            '--copyright', 'Copyrigth 2021 @Onehypernet'
+    ]
+
+    switch (installType) {
+        case 'msi':
+            args += [
+                    '--icon', "${icon}.ico",
+                    '--win-per-user-install', '--win-dir-chooser',
+                    '--win-menu', '--win-shortcut'
+            ]
+            break
+        case 'pkg': case 'dmg':
+            args += ['--icon', "${icon}.icns"]
+            break
+        case 'deb': case 'rpm':
+            args += [
+                    '--icon', "${icon}.png",
+                    '--linux-menu-group', 'Office',
+                    '--linux-shortcut',
+                    '--linux-deb-maintainer', 'quangpv@onehypernet.com'
+            ]
+            break
+    }
+    println(args)
+    commandLine args
+}

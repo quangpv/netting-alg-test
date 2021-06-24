@@ -1,0 +1,110 @@
+@import "colors.css";
+@import "table-themes.css";
+@import "button-themes.css";
+@import "editext-themes.css";
+@import "dropdown-themes.css";
+@import "label-themes.css";
+@import "combobox-themes.css";
+@import "menubar-themes.css";
+
+.root {
+    /*-fx-font-family: "SF Pro Display";*/
+}
+
+.text-color-primary {
+    -fx-text-fill: -fx-color-primary;
+}
+
+.text-decoration-underline {
+    -fx-underline: true;
+}
+
+.text-color-grey-light {
+    -fx-text-fill: -fx-color-grey-light;
+}
+
+.text-color-grey {
+    -fx-text-fill: -fx-color-grey;
+}
+
+.text-color-black {
+    -fx-text-fill: -fx-color-black;
+}
+
+.text-color-white {
+    -fx-text-fill: -fx-color-white;
+}
+
+.bg-color-primary {
+    -fx-background-color: -fx-color-primary;
+}
+
+
+.bg-color-green {
+    -fx-background-color: -fx-color-green;
+}
+
+.font-bold {
+    -fx-font-weight: 900;
+}
+
+.bg-color-grey {
+    -fx-background-color: -fx-color-grey;
+}
+
+.bg-color-grey-light {
+    -fx-background-color: -fx-color-grey-light;
+}
+
+.bg-color-white {
+    -fx-background-color: -fx-color-white;
+}
+
+.box-border-grey-light {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-color-grey-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: solid;
+}
+
+.box-corner {
+    -fx-border-radius: 2px;
+    -fx-overflow: hidden;
+}
+
+.box-white-border-grey-light {
+    -fx-background-color: -fx-color-white;
+    -fx-border-color: -fx-color-grey-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: solid;
+}
+
+.box-border-primary-light {
+    -fx-background-color: -fx-color-primary-light;
+    -fx-border-color: -fx-color-primary;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: solid;
+}
+
+.drag-drop {
+    -fx-background-color: -fx-color-white;
+    -fx-border-color: -fx-color-primary;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: dotted;
+}
+
+.drag-drop:hover {
+    -fx-cursor: hand;
+}
+
+.drag-drop-enter {
+    -fx-background-color: -fx-color-primary-light;
+    -fx-border-color: -fx-color-primary;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-border-style: dotted;
+}

@@ -1,0 +1,5 @@
+include ':netting'
+include ':common'
+
+project(":netting").projectDir = new File("../../cordapp/conclave/netting")
+project(":common").projectDir = new File("../../cordapp/common")
