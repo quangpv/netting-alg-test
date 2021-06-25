@@ -16,7 +16,9 @@ import com.onehypernet.model.NettingResult
 import com.onehypernet.model.NettingTransaction
 import com.onehypernet.model.PartyLocation
 import com.onehypernet.netting.optimize.ParameterLookup
+import com.onehypernet.netting.optimize.v1.ConvertibleOptimizationImpl
 import com.onehypernet.netting.optimize.v3.OptimizeNettingImpl
+import com.onehypernet.netting.optimize.v4.OptimizeNettingImplV4
 import com.onehypernet.netting.report.FXCalculatorImpl
 import javafx.scene.Node
 import javafx.scene.control.Button
@@ -155,7 +157,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun load(load: File) = launch(error = error) {
-        transactions.post(CSVLoader.load<com.onehypernet.da.controller.Transaction>(load))
+        transactions.post(CSVLoader.load<Transaction>(load))
     }
 
     fun loadParams(it: File) = launch(error = error) {
@@ -167,7 +169,7 @@ class MainViewModel : ViewModel() {
 
     fun optimize(items: List<ITransaction>) = launch(loading, error, Dispatchers.IO) {
         val lookup = createParamLookup() ?: return@launch
-        val optimize = OptimizeNettingImpl(lookup)
+        val optimize = OptimizeNettingImplV4(lookup = lookup)
         val trans = items.map {
             NettingTransaction(
                 it.fromPartyId,
