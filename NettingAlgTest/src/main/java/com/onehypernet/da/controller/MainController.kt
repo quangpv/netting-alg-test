@@ -19,6 +19,7 @@ import com.onehypernet.netting.optimize.ParameterLookup
 import com.onehypernet.netting.optimize.v1.ConvertibleOptimizationImpl
 import com.onehypernet.netting.optimize.v3.OptimizeNettingImpl
 import com.onehypernet.netting.optimize.v4.OptimizeNettingImplV4
+import com.onehypernet.netting.optimize.v4.OptimizeNettingImplV5
 import com.onehypernet.netting.report.FXCalculatorImpl
 import javafx.scene.Node
 import javafx.scene.control.Button
