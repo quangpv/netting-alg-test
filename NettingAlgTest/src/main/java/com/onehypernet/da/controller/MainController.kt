@@ -15,11 +15,9 @@ import com.onehypernet.model.FeeParam
 import com.onehypernet.model.NettingResult
 import com.onehypernet.model.NettingTransaction
 import com.onehypernet.model.PartyLocation
+import com.onehypernet.netting.exception.MissingException
 import com.onehypernet.netting.optimize.ParameterLookup
-import com.onehypernet.netting.optimize.v1.ConvertibleOptimizationImpl
-import com.onehypernet.netting.optimize.v3.OptimizeNettingImpl
-import com.onehypernet.netting.optimize.v4.OptimizeNettingImplV4
-import com.onehypernet.netting.optimize.v4.OptimizeNettingImplV5
+import com.onehypernet.netting.optimize.v4.OptimizeNettingImpl
 import com.onehypernet.netting.report.FXCalculatorImpl
 import javafx.scene.Node
 import javafx.scene.control.Button
@@ -137,6 +135,10 @@ class MainController : Controller() {
                 it.isDisable = loading.safe(false)
             }
         }
+
+        viewModel.missing.observe(this) {
+            ErrorDialog().show(it.safe().joinToString("\n\n").ifBlank { "Unknown" })
+        }
     }
 }
 
@@ -151,6 +153,7 @@ class MainViewModel : ViewModel() {
     val instructions = MutableLiveData<List<NettingPaymentHolder>>()
     val report = MutableLiveData<NettingResult>()
     val loading = MutableLiveData<Boolean>()
+    val missing = MutableLiveData<List<String>>()
 
     init {
         simulatedFee.post("0.0")
@@ -170,7 +173,7 @@ class MainViewModel : ViewModel() {
 
     fun optimize(items: List<ITransaction>) = launch(loading, error, Dispatchers.IO) {
         val lookup = createParamLookup() ?: return@launch
-        val optimize = OptimizeNettingImplV4(lookup = lookup)
+        val optimize = OptimizeNettingImpl(lookup = lookup)
         val trans = items.map {
             NettingTransaction(
                 it.fromPartyId,
@@ -180,7 +183,12 @@ class MainViewModel : ViewModel() {
                 it.convertible == "Y"
             )
         }
-        val result = optimize.process(trans)
+        val result = try {
+            optimize.process(trans)
+        } catch (e: MissingException) {
+            missing.post(e.values)
+            return@launch
+        }
         val simulatedFeeValue = optimize.fxCalculator.getTotalFee(trans)
         println("Total fee=${result.totalFee}, Simulated = $simulatedFeeValue")
 
