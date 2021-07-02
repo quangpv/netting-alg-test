@@ -8,7 +8,7 @@ import com.onehypernet.netting.optimize.ParameterLookup
 import javafx.scene.control.TableView
 
 class NettingPaymentHolder(private val payment: NettingPayment, lookup: ParameterLookup) : IGraphItem, CSVRecord {
-    private val params = lookup.getNetting(payment.fromPartyId, payment.currency, payment.toPartyId)
+    private val params = lookup.getNetting(payment.fromPartyId, payment.toPartyId, payment.currency)
 
     override val fromPartyId: String = payment.fromPartyId
     override val toPartyId: String = payment.toPartyId

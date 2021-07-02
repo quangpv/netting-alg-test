@@ -50,6 +50,7 @@ class MainController : Controller() {
 
     lateinit var lbSimulatedFee: Label
     lateinit var lbTotalFee: Label
+    lateinit var lbSolvingTime: Label
 
     private val viewModel by viewModel<MainViewModel>()
 
@@ -89,6 +90,7 @@ class MainController : Controller() {
             btnViewResult.setOnMouseClicked {
                 StageLoader("result").start(args = result)
             }
+            lbSolvingTime.text = "Solving time: ${result?.timeToSolve ?: 0.0} ms"
         }
 
         viewModel.transactions.observe(this) {
@@ -205,10 +207,14 @@ class MainViewModel : ViewModel() {
             FeeParam(
                 it.fx1,
                 it.fx2,
+                it.margin.toDouble(),
                 it.feePercent.toDouble(),
+                it.feeMin.toDouble(),
+                it.feeMax.toDouble(),
                 it.fixedFee.toDouble(),
                 it.exchangeRate.toDouble(),
                 it.location,
+                it.toLocations,
             )
         }.orEmpty()
         val locations = locations.value?.map { PartyLocation(it.partyId, it.locationCode) }.orEmpty()
