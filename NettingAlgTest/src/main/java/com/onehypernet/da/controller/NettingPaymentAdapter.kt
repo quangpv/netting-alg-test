@@ -13,7 +13,10 @@ class NettingPaymentHolder(private val payment: NettingPayment, lookup: Paramete
     override val fromPartyId: String = payment.fromPartyId
     override val toPartyId: String = payment.toPartyId
     override val amount: String = textFormatter.formatAmount(payment.amount)
+    val margin: String = params.marginPercent.toString()
     val rateFee: String = params.feePercent.toString()
+    val min: String = params.minFee.toString()
+    val max: String = params.maxFee.toString()
     val fixedFee: String = params.fixedFee.toString()
     override val currency: String = payment.currency
 
@@ -30,7 +33,10 @@ class NettingPaymentAdapter(view: TableView<NettingPaymentHolder>) : TableAdapte
         Column("To", "toPartyId"),
         Column("Amount", "amount"),
         Column("Currency", "currency"),
-        Column("%", "rateFee"),
+        Column("M%", "margin"),
+        Column("F%", "rateFee"),
+        Column("Min", "min"),
+        Column("Max", "max"),
         Column("Fixed(USD)", "fixedFee"),
     )
 )

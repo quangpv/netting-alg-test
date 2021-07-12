@@ -27,6 +27,15 @@ subprojects {
     }
 }
 
+allprojects{
+
+    repositories {
+        maven {
+            url = file("/Users/quangpv/Desktop/CordaProjects/onehypernet/cordapp/repo")
+        }
+    }
+}
+
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

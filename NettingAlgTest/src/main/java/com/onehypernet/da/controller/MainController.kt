@@ -11,6 +11,7 @@ import com.onehypernet.da.helper.CSVLoader
 import com.onehypernet.da.helper.textFormatter
 import com.onehypernet.da.widget.ErrorDialog
 import com.onehypernet.da.widget.ImportCSVAction
+import com.onehypernet.extension.asBoolean
 import com.onehypernet.model.FeeParam
 import com.onehypernet.model.NettingResult
 import com.onehypernet.model.NettingTransaction
@@ -217,7 +218,9 @@ class MainViewModel : ViewModel() {
                 it.toLocations,
             )
         }.orEmpty()
-        val locations = locations.value?.map { PartyLocation(it.partyId, it.locationCode) }.orEmpty()
+        val locations = locations.value?.map {
+            PartyLocation(it.partyId, it.locationCode, it.selfConvert.asBoolean())
+        }.orEmpty()
         return ParameterLookup(
             params,
             locations
@@ -225,7 +228,9 @@ class MainViewModel : ViewModel() {
     }
 
     fun loadLocations(it: File) = launch(error = error) {
-        locations.post(CSVLoader.load(it))
+        locations.post(CSVLoader.load(it) {
+            Location(it[0], it[1], if (it.size <= 2) "Y" else it[2])
+        })
     }
 
     fun loadSimulatedFee(trans: List<ITransaction>) = launch(error = error) {
