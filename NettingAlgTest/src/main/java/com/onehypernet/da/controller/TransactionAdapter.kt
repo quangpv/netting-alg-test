@@ -1,6 +1,7 @@
 package com.onehypernet.da.controller
 
 import com.onehypernet.da.helper.CSVRecord
+import com.onehypernet.da.helper.textFormatter
 import com.onehypernet.da.view.TableAdapter
 import com.onehypernet.da.widget.EditingCell
 import javafx.scene.control.TableColumn
@@ -20,8 +21,10 @@ data class Transaction(
     override var toPartyId: String = "",
     override var amount: String = "",
     override var currency: String = "",
-    override var convertible: String = ""
-) : ITransaction
+    var _convertible: String = ""
+) : ITransaction {
+    override val convertible get() = textFormatter.formatBoolean(_convertible)
+}
 
 class TransactionAdapter(private val view: TableView<ITransaction>) : TableAdapter<ITransaction>(
     view, listOf(

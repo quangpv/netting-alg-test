@@ -19,7 +19,6 @@ import com.onehypernet.model.PartyLocation
 import com.onehypernet.netting.exception.MissingException
 import com.onehypernet.netting.optimize.ParameterLookup
 import com.onehypernet.netting.optimize.v4.OptimizeNettingImpl
-import com.onehypernet.netting.report.FXCalculatorImpl
 import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -183,7 +182,7 @@ class MainViewModel : ViewModel() {
                 it.toPartyId,
                 it.amount.toDouble(),
                 it.currency,
-                it.convertible == "Y"
+                it.convertible.asBoolean()
             )
         }
         val result = try {
@@ -219,7 +218,11 @@ class MainViewModel : ViewModel() {
             )
         }.orEmpty()
         val locations = locations.value?.map {
-            PartyLocation(it.partyId, it.locationCode, it.selfConvert.asBoolean())
+            PartyLocation(
+                it.partyId, it.locationCode,
+                it.currencyCode,
+                it.selfConvert.asBoolean()
+            )
         }.orEmpty()
         return ParameterLookup(
             params,
@@ -229,23 +232,12 @@ class MainViewModel : ViewModel() {
 
     fun loadLocations(it: File) = launch(error = error) {
         locations.post(CSVLoader.load(it) {
-            Location(it[0], it[1], if (it.size <= 2) "Y" else it[2])
+            Location(
+                it[0], it[1],
+                if (it.size <= 2 && it[2].isBlank()) "" else it[2],
+                if (it.size <= 3) "Y" else textFormatter.formatBoolean(it[3])
+            )
         })
-    }
-
-    fun loadSimulatedFee(trans: List<ITransaction>) = launch(error = error) {
-        val lookup = createParamLookup() ?: return@launch
-        val result = FXCalculatorImpl(lookup).getTotalFee(trans.mapNotNull {
-            if (it.fromPartyId.isBlank()) null else
-                NettingTransaction(
-                    it.fromPartyId,
-                    it.toPartyId,
-                    it.amount.toDouble(),
-                    it.currency,
-                    it.convertible == "Y"
-                )
-        })
-        simulatedFee.post("${textFormatter.formatFee(result)}$")
     }
 }
 

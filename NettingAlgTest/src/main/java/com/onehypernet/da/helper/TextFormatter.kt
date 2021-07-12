@@ -23,8 +23,13 @@ class TextFormatter {
         return "${DecimalFormat("##,##").format(percent)}%"
     }
 
-    fun formatConvertible(convertibility: Int): String {
+    fun formatBoolean(convertibility: Int): String {
         return if (convertibility != 0) "Y" else "N"
+    }
+
+    fun formatBoolean(b: String): String {
+        if (b == "Y" || b == "N") return b
+        return if (b.toBoolean()) "Y" else "N"
     }
 }
 
