@@ -139,7 +139,7 @@ class MainController : Controller() {
         }
 
         viewModel.missing.observe(this) {
-            ErrorDialog().show(it.safe().joinToString("\n\n").ifBlank { "Unknown" })
+            ErrorDialog().show(it.safe())
         }
     }
 }
@@ -155,7 +155,7 @@ class MainViewModel : ViewModel() {
     val instructions = MutableLiveData<List<NettingPaymentHolder>>()
     val report = MutableLiveData<NettingResult>()
     val loading = MutableLiveData<Boolean>()
-    val missing = MutableLiveData<List<String>>()
+    val missing = MutableLiveData<String>()
 
     init {
         simulatedFee.post("0.0")
@@ -188,7 +188,7 @@ class MainViewModel : ViewModel() {
         val result = try {
             optimize.process(trans)
         } catch (e: MissingException) {
-            missing.post(e.values)
+            missing.post(e.message)
             return@launch
         }
         val simulatedFeeValue = optimize.fxCalculator.getTotalFee(trans)
