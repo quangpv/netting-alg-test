@@ -194,6 +194,16 @@ class MainViewModel : ViewModel() {
         val simulatedFeeValue = optimize.fxCalculator.getTotalFee(trans)
         println("Total fee=${result.totalFee}, Simulated = $simulatedFeeValue")
 
+        (trans.map { it.fromPartyId } + trans.map { it.toPartyId }).toSet().forEach { party ->
+            val before = optimize.fxCalculator.getBalance(
+                party,
+                trans.filter { it.fromPartyId == party || it.toPartyId == party })
+            val after = optimize.fxCalculator.getBalance(
+                party,
+                result.payments.filter { it.fromPartyId == party || it.toPartyId == party })
+            println("Party position $party Before=${before} After=${after}, Devitation=${after - before}")
+        }
+
         instructions.post(result.payments.map { NettingPaymentHolder(it, lookup) })
         totalFee.post("${textFormatter.formatFee(result.totalFee)}$")
         simulatedFee.post("${textFormatter.formatFee(simulatedFeeValue)}$")

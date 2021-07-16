@@ -7,6 +7,8 @@ import javafx.scene.input.MouseButton
 
 
 interface IParty {
+    val postBalance: Double
+    val preBalance: Double
     val counterPartyId: String
     val totalCashTransferSaving: String
     val totalFeeSaving: String

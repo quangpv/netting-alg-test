@@ -27,7 +27,9 @@ class NettingResultController : Controller(), ArgumentChangeable {
         partyAdapter = PartyAdapter(tbParty)
 
         partyAdapter.onItemClickListener = { party ->
-            lbSaving.text = "Party ${party.counterPartyId} Saving"
+            lbSaving.text = "Party ${party.counterPartyId} Saving, " +
+                    "Pre-Position= ${party.preBalance}, Post-Position= ${party.postBalance}, " +
+                    "Deviation= ${party.postBalance - party.preBalance}"
             savingReportAdapter.setCurrency(party.currency)
             savingReportAdapter.submit((party as PartyImpl).savings.map { SavingReportImpl(it) })
         }
@@ -57,6 +59,10 @@ class PartyImpl(private val nettingReport: PartyReport) : IParty {
     override val totalNoSaving: String
         get() = nettingReport.totalNoSaving.toString()
     val savings get() = nettingReport.savingReports
+    override val preBalance: Double
+        get() = nettingReport.preBalance
+    override val postBalance: Double
+        get() = nettingReport.postBalance
 }
 
 class SavingReportImpl(private val savingReport: SavingReport) : ISavingReport {
