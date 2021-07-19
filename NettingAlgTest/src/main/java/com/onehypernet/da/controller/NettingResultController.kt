@@ -30,7 +30,7 @@ class NettingResultController : Controller(), ArgumentChangeable {
             lbSaving.text = "Party ${party.counterPartyId} Saving, " +
                     "Pre-Position= ${party.preBalance}, Post-Position= ${party.postBalance}, " +
                     "Deviation= ${party.postBalance - party.preBalance}"
-            savingReportAdapter.setCurrency(party.currency)
+            savingReportAdapter.setCurrency("USD")
             savingReportAdapter.submit((party as PartyImpl).savings.map { SavingReportImpl(it) })
         }
     }
@@ -49,12 +49,10 @@ class PartyImpl(private val nettingReport: PartyReport) : IParty {
         get() = nettingReport.partyId
 
     override val totalCashTransferSaving: String
-        get() = textFormatter.formatFee(nettingReport.totalCashTransferSaving, nettingReport.partyCurrency)
+        get() = textFormatter.formatFee(nettingReport.totalCashTransferSaving, "USD")
 
     override val totalFeeSaving: String
         get() = textFormatter.formatFee(nettingReport.totalFeeSaving, "USD")
-    override val currency: String
-        get() = nettingReport.partyCurrency
 
     override val totalNoSaving: String
         get() = nettingReport.totalNoSaving.toString()

@@ -13,7 +13,6 @@ interface IParty {
     val totalCashTransferSaving: String
     val totalFeeSaving: String
     val totalNoSaving:String
-    val currency: String
 }
 
 class PartyAdapter(view: TableView<IParty>) : TableAdapter<IParty>(
