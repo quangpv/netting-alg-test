@@ -51,6 +51,7 @@ class MainController : Controller() {
     lateinit var lbSimulatedFee: Label
     lateinit var lbTotalFee: Label
     lateinit var lbSolvingTime: Label
+    lateinit var lbVersion: Label
 
     private val viewModel by viewModel<MainViewModel>()
 
@@ -61,6 +62,7 @@ class MainController : Controller() {
         val locationAdapter = LocationAdapter(tbLocation)
         val nettingResultAdapter = NettingPaymentAdapter(tbNettingResult)
 
+        lbVersion.text = "v0.0.1"
         btnAddTransaction.setOnMouseClicked {
             transactionAdapter.addEmpty()
         }
