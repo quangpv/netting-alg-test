@@ -34,6 +34,17 @@ allprojects{
             url = file("/Users/quangpv/Desktop/CordaProjects/onehypernet/cordapp/repo")
         }
     }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 dependencies {
@@ -68,17 +79,6 @@ javafx {
 }
 
 mainClassName = "com.onehypernet.da.Launcher"
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
 
 def appName = 'OneHypernet'
 def outFolder = 'out/artifacts/desktop_app_jar/'
