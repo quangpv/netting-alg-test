@@ -62,7 +62,7 @@ class MainController : Controller() {
         val locationAdapter = LocationAdapter(tbLocation)
         val nettingResultAdapter = NettingPaymentAdapter(tbNettingResult)
 
-        lbVersion.text = "v0.0.2"
+        lbVersion.text = "v0.0.3"
         btnAddTransaction.setOnMouseClicked {
             transactionAdapter.addEmpty()
         }
