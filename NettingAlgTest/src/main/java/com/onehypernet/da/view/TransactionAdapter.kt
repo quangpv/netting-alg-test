@@ -1,8 +1,8 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.view
 
+import com.onehypernet.da.controller.IGraphItem
 import com.onehypernet.da.helper.CSVRecord
 import com.onehypernet.da.helper.textFormatter
-import com.onehypernet.da.view.TableAdapter
 import com.onehypernet.da.widget.EditingCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView

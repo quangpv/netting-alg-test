@@ -1,6 +1,5 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.view
 
-import com.onehypernet.da.view.TableAdapter
 import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.control.TableColumn

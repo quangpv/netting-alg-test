@@ -1,6 +1,5 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.view
 
-import com.onehypernet.da.view.TableAdapter
 import javafx.scene.control.TableView
 
 class Location(

@@ -1,4 +1,4 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.widget
 
 import com.brunomnsilva.smartgraph.containers.ContentResizerPane
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel

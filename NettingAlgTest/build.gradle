@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id "org.openjfx.javafxplugin" version "0.0.10"
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.30' apply false
 }
 sourceCompatibility = 11
 targetCompatibility = 11

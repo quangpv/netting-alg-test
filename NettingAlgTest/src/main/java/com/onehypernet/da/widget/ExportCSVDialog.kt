@@ -1,8 +1,7 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.widget
 
 import com.onehypernet.da.helper.CSVExporter
 import com.onehypernet.da.helper.CSVRecord
-import com.onehypernet.da.widget.ErrorDialog
 import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.input.MouseEvent

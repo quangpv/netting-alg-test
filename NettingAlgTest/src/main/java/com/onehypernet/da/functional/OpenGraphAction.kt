@@ -1,11 +1,13 @@
-package com.onehypernet.da.controller
+package com.onehypernet.da.functional
 
 import com.brunomnsilva.smartgraph.graph.DigraphEdgeList
 import com.brunomnsilva.smartgraph.graph.Graph
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties
+import com.onehypernet.da.controller.IGraphItem
 import com.onehypernet.da.core.StageLoader
+import com.onehypernet.da.widget.SmartGraphDemoContainer
 import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
@@ -52,7 +54,6 @@ class OpenGraphAction(
         val strategy = SmartCircularSortedPlacementStrategy()
         val graphView: SmartGraphPanel<String, String> = SmartGraphPanel(g, properties, strategy, css)
         val scene = Scene(SmartGraphDemoContainer(graphView), 1024.0, 768.0)
-
         stage.scene = scene
         stage.show()
 
