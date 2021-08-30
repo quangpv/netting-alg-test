@@ -8,7 +8,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 abstract class ViewModel {
     val scope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext = Job() + Dispatchers.JavaFx
+        override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.JavaFx
     }
 
     fun clear() {

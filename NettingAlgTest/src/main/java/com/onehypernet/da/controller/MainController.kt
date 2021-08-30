@@ -1,33 +1,19 @@
 package com.onehypernet.da.controller
 
 import com.onehypernet.da.core.Controller
-import com.onehypernet.da.core.MutableLiveData
 import com.onehypernet.da.core.StageLoader
-import com.onehypernet.da.core.viewmodel.ViewModel
-import com.onehypernet.da.core.viewmodel.launch
 import com.onehypernet.da.core.viewmodel.viewModel
 import com.onehypernet.da.extensions.safe
 import com.onehypernet.da.functional.OpenGraphAction
-import com.onehypernet.da.helper.CSVLoader
-import com.onehypernet.da.helper.textFormatter
 import com.onehypernet.da.view.*
 import com.onehypernet.da.widget.ErrorDialog
 import com.onehypernet.da.widget.ExportCSVDialog
 import com.onehypernet.da.widget.ImportCSVAction
-import com.onehypernet.extension.asBoolean
-import com.onehypernet.model.FeeParam
-import com.onehypernet.model.NettingResult
-import com.onehypernet.model.NettingTransaction
-import com.onehypernet.model.PartyLocation
-import com.onehypernet.netting.exception.MissingException
-import com.onehypernet.netting.optimize.ParameterLookup
-import com.onehypernet.netting.optimize.v4.OptimizeNettingImpl
 import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TableView
-import kotlinx.coroutines.Dispatchers
-import java.io.File
+import javafx.scene.control.TextField
 
 
 class MainController : Controller() {
@@ -56,6 +42,8 @@ class MainController : Controller() {
     lateinit var lbSolvingTime: Label
     lateinit var lbVersion: Label
 
+    lateinit var edtBridging: TextField
+
     private val viewModel by viewModel<MainViewModel>()
 
     override fun onCreate(node: Node) {
@@ -65,7 +53,7 @@ class MainController : Controller() {
         val locationAdapter = LocationAdapter(tbLocation)
         val nettingResultAdapter = NettingPaymentAdapter(tbNettingResult)
 
-        lbVersion.text = "v0.0.3"
+        lbVersion.text = "v0.0.4"
         btnAddTransaction.setOnMouseClicked {
             transactionAdapter.addEmpty()
         }
@@ -73,7 +61,7 @@ class MainController : Controller() {
             transactionAdapter.removeSelected()
         }
         btnOptimize.setOnMouseClicked {
-            viewModel.optimize(transactionAdapter.items)
+            viewModel.optimize(transactionAdapter.items, edtBridging.text)
         }
         btnImportCSV.onMouseClicked = ImportCSVAction(node, "Transactions") { viewModel.load(it) }
 
@@ -95,7 +83,7 @@ class MainController : Controller() {
             btnViewResult.setOnMouseClicked {
                 StageLoader("result").start(args = result)
             }
-            lbSolvingTime.text = "Solving time: ${result?.timeToSolve ?: 0.0} ms"
+            lbSolvingTime.text = "Solving time: ${result?.result?.timeToSolve ?: 0.0} ms"
         }
 
         viewModel.transactions.observe(this) {
@@ -146,113 +134,8 @@ class MainController : Controller() {
         viewModel.missing.observe(this) {
             ErrorDialog().show(it.safe())
         }
-    }
-}
 
-class MainViewModel : ViewModel() {
-    val simulatedFee = MutableLiveData<String>()
-    val totalFee = MutableLiveData<String>()
-
-    val locations = MutableLiveData<List<Location>>()
-    val transactions = MutableLiveData<List<ITransaction>>()
-    val params = MutableLiveData<List<INettingParams>>()
-    val error = MutableLiveData<Throwable>()
-    val instructions = MutableLiveData<List<NettingPaymentHolder>>()
-    val report = MutableLiveData<NettingResult>()
-    val loading = MutableLiveData<Boolean>()
-    val missing = MutableLiveData<String>()
-
-    init {
-        simulatedFee.post("0.0")
-        totalFee.post("0.0")
-    }
-
-    fun load(load: File) = launch(error = error) {
-        transactions.post(CSVLoader.load<Transaction>(load))
-    }
-
-    fun loadParams(it: File) = launch(error = error) {
-        params.post(CSVLoader.load<NettingParams>(it).let {
-            if (it.first().fx1 == "From") (it as MutableList).removeAt(0)
-            it
-        })
-    }
-
-    fun optimize(items: List<ITransaction>) = launch(loading, error, Dispatchers.IO) {
-        val lookup = createParamLookup() ?: return@launch
-        val optimize = OptimizeNettingImpl(lookup = lookup)
-        val trans = items.map {
-            NettingTransaction(
-                it.fromPartyId,
-                it.toPartyId,
-                it.amount.toDouble(),
-                it.currency,
-                it.convertible.asBoolean()
-            )
-        }
-        val result = try {
-            optimize.process(trans)
-        } catch (e: MissingException) {
-            missing.post(e.message)
-            return@launch
-        }
-        val simulatedFeeValue = optimize.fxCalculator.getTotalFee(trans)
-        println("Total fee=${result.totalFee}, Simulated = $simulatedFeeValue")
-
-        (trans.map { it.fromPartyId } + trans.map { it.toPartyId }).toSet().forEach { party ->
-            val before = optimize.fxCalculator.getBalance(
-                party,
-                trans.filter { it.fromPartyId == party || it.toPartyId == party })
-            val after = optimize.fxCalculator.getBalance(
-                party,
-                result.payments.filter { it.fromPartyId == party || it.toPartyId == party })
-            println("Party position $party Before=${before} After=${after}, Devitation=${after - before}")
-        }
-
-        instructions.post(result.payments.map { NettingPaymentHolder(it, lookup) })
-        totalFee.post("${textFormatter.formatFee(result.totalFee)}$")
-        simulatedFee.post("${textFormatter.formatFee(simulatedFeeValue)}$")
-        report.post(result)
-    }
-
-    private fun createParamLookup(): ParameterLookup? {
-        if (params.value == null || locations.value == null) return null
-
-        val params = params.value?.filter { it.isNotBlank() }?.map {
-            FeeParam(
-                it.fx1,
-                it.fx2,
-                it.margin.toDouble(),
-                it.feePercent.toDouble(),
-                it.feeMin.toDouble(),
-                it.feeMax.toDouble(),
-                it.fixedFee.toDouble(),
-                it.exchangeRate.toDouble(),
-                it.location,
-                it.toLocations,
-            )
-        }.orEmpty()
-        val locations = locations.value?.map {
-            PartyLocation(
-                it.partyId, it.locationCode,
-                it.currencyCode,
-                it.selfConvert.asBoolean()
-            )
-        }.orEmpty()
-        return ParameterLookup(
-            params,
-            locations
-        )
-    }
-
-    fun loadLocations(it: File) = launch(error = error) {
-        locations.post(CSVLoader.load(it) {
-            Location(
-                it[0], it[1],
-                if (it.size <= 2 && it[2].isBlank()) "" else it[2],
-                if (it.size <= 3) "Y" else textFormatter.formatBoolean(it[3])
-            )
-        })
+        edtBridging.text = "USD"
     }
 }
 

@@ -7,7 +7,6 @@ import com.onehypernet.da.view.IParty
 import com.onehypernet.da.view.ISavingReport
 import com.onehypernet.da.view.PartyAdapter
 import com.onehypernet.da.view.SavingReportAdapter
-import com.onehypernet.model.NettingResult
 import com.onehypernet.model.PartyReport
 import com.onehypernet.model.SavingReport
 import javafx.scene.Node
@@ -42,8 +41,8 @@ class NettingResultController : Controller(), ArgumentChangeable {
     @Suppress("unchecked_cast")
     override fun onNewArguments(args: Any) {
         val result = args as? NettingResult ?: return
-        lbTotalFee.text = "Total fee: ${textFormatter.formatFee(result.totalFee)} USD"
-        lbTotalSimulatedFee.text = "Total simulated fee: ${textFormatter.formatFee(result.totalSimulatedFee)} USD"
+        lbTotalFee.text = "Total fee: ${textFormatter.formatFee(result.fee)} USD"
+        lbTotalSimulatedFee.text = "Total simulated fee: ${textFormatter.formatFee(result.simulatedFee)} USD"
         partyAdapter.submit(result.reports.map { PartyImpl(it) })
     }
 }

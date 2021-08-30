@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -170,6 +171,16 @@
                            </HBox.margin>
                         </Label>
                         <Button fx:id="btnImportParams" mnemonicParsing="false" styleClass="btn-border" text="Import CSV" />
+                        <Label text="Bridging">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="edtBridging" styleClass="edit-text">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </TextField>
                      </children>
                      <VBox.margin>
                         <Insets />
